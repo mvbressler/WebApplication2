@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebApplication2.Repositories
 {
-    public interface IRepository<T> where T: class
+    public interface IRepository<T> 
     {
         T Add(T t);
         Task<T> AddAsyn(T t);
@@ -20,7 +20,7 @@ namespace WebApplication2.Repositories
         Task<ICollection<T>> FindAllAsync(Expression<Func<T, bool>> match);
         Task<T> FindAsync(Expression<Func<T, bool>> match);
         IQueryable<T> FindBy(Expression<Func<T, bool>> predicate);
-        Task<ICollection<T>> FindByAsyn(Expression<Func<T, bool>> predicate);
+        Task<ICollection<T>> FindByAsync(Expression<Func<T, bool>> predicate);
         T Get(int id);
         IQueryable<T> GetAll();
         Task<ICollection<T>> GetAllAsyn();

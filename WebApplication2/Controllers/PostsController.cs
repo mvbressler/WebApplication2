@@ -1,28 +1,31 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using WebApplication2.SQLite;
+using WebApplication2.Models;
+using WebApplication2.Repositories;
 
 namespace WebApplication2.Controllers
 {
     public class PostsController : Controller
     {
-        private readonly BloggingContext _context;
+        private readonly IRepository<Post> _repo;
+        private readonly IRepository<Blog> _blogrepo;
 
-        public PostsController(BloggingContext context)
+        public PostsController(IRepository<Post> repo, IRepository<Blog> blogrepo)
         {
-            _context = context;
+            _repo = repo;
+            _blogrepo = blogrepo;
         }
 
         // GET: Posts
         public async Task<IActionResult> Index()
         {
-            var bloggingContext = _context.Posts.Include(p => p.Blog);
-            return View(await bloggingContext.ToListAsync());
+            return View(await _repo.GetAllAsyn());
         }
 
         // GET: Posts/Details/5
@@ -33,9 +36,8 @@ namespace WebApplication2.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts
-                .Include(p => p.Blog)
-                .FirstOrDefaultAsync(m => m.PostId == id);
+            var post = await _repo.FindAsync(m => m.PostId == id);
+                
             if (post == null)
             {
                 return NotFound();
@@ -46,8 +48,9 @@ namespace WebApplication2.Controllers
 
         // GET: Posts/Create
         public IActionResult Create()
-        {
-            ViewData["BlogId"] = new SelectList(_context.Blogs, "BlogId", "BlogId");
+
+        {       
+            ViewData["BlogId"] = new SelectList(_blogrepo.GetAll(), "BlogId", "BlogId");
             return View();
         }
 
@@ -60,11 +63,12 @@ namespace WebApplication2.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(post);
-                await _context.SaveChangesAsync();
+                //_repo.Add(post);
+                await _repo.AddAsyn(post);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BlogId"] = new SelectList(_context.Blogs, "BlogId", "BlogId", post.BlogId);
+            
+            ViewData["BlogId"] = new SelectList(_blogrepo.GetAll(), "BlogId", "BlogId", post.BlogId);
             return View(post);
         }
 
@@ -76,12 +80,12 @@ namespace WebApplication2.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts.FindAsync(id);
+            var post = await _repo.FindAsync(m =>m.PostId == id);
             if (post == null)
             {
                 return NotFound();
             }
-            ViewData["BlogId"] = new SelectList(_context.Blogs, "BlogId", "BlogId", post.BlogId);
+            ViewData["BlogId"] = new SelectList(_blogrepo.GetAll(), "BlogId", "BlogId", post.BlogId);
             return View(post);
         }
 
@@ -101,8 +105,8 @@ namespace WebApplication2.Controllers
             {
                 try
                 {
-                    _context.Update(post);
-                    await _context.SaveChangesAsync();
+                    //_repo.Update(post);
+                    await _repo.UpdateAsyn(post, id);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -117,7 +121,7 @@ namespace WebApplication2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BlogId"] = new SelectList(_context.Blogs, "BlogId", "BlogId", post.BlogId);
+            ViewData["BlogId"] = new SelectList(_blogrepo.GetAll(), "BlogId", "BlogId", post.BlogId);
             return View(post);
         }
 
@@ -129,9 +133,7 @@ namespace WebApplication2.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts
-                .Include(p => p.Blog)
-                .FirstOrDefaultAsync(m => m.PostId == id);
+            var post = await _repo.FindAsync(m => m.PostId == id);
             if (post == null)
             {
                 return NotFound();
@@ -145,15 +147,16 @@ namespace WebApplication2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var post = await _context.Posts.FindAsync(id);
-            _context.Posts.Remove(post);
-            await _context.SaveChangesAsync();
+            var post = await _repo.FindAsync(m => m.PostId == id);
+            await _repo.DeleteAsyn(post);
             return RedirectToAction(nameof(Index));
         }
 
         private bool PostExists(int id)
         {
-            return _context.Posts.Any(e => e.PostId == id);
+            //var post = _repo.Find(m => m.PostId == id);
+            
+            return (_repo.Find(m => m.PostId == id) != null);
         }
     }
 }

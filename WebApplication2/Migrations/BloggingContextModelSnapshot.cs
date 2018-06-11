@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplication2.SQLite;
+using WebApplication2.Models;
 
 namespace WebApplication2.Migrations
 {
@@ -15,7 +16,7 @@ namespace WebApplication2.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.1.0-rtm-30799");
 
-            modelBuilder.Entity("WebApplication2.SQLite.Blog", b =>
+            modelBuilder.Entity("WebApplication2.Models.Blog", b =>
                 {
                     b.Property<int>("BlogId")
                         .ValueGeneratedOnAdd();
@@ -27,7 +28,7 @@ namespace WebApplication2.Migrations
                     b.ToTable("Blogs");
                 });
 
-            modelBuilder.Entity("WebApplication2.SQLite.Post", b =>
+            modelBuilder.Entity("WebApplication2.Models.Post", b =>
                 {
                     b.Property<int>("PostId")
                         .ValueGeneratedOnAdd();
@@ -45,7 +46,7 @@ namespace WebApplication2.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("WebApplication2.SQLite.Post", b =>
+            modelBuilder.Entity("WebApplication2.Models.Post", b =>
                 {
                     b.HasOne("WebApplication2.SQLite.Blog", "Blog")
                         .WithMany("Posts")

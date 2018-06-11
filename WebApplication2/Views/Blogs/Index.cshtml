@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebApplication2.SQLite.Blog>
+﻿@model IEnumerable<WebApplication2.Models.Blog>
 
 @{
     ViewData["Title"] = "Blogs";
@@ -8,29 +8,43 @@
 <h2>@ViewData["Title"]</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-success btn-sm font-weight-bold" role="button" asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Url)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Url)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.BlogId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BlogId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.BlogId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<div class="table-responsive-sm">
+    <table class="table table-sm table-hover table-borderless" id="BlogsGrid">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    <a href="#">All</a>
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Url)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td width="5%">
+                        <div class="form-check">
+                            <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" >
+                        </div>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Url)
+                    </td>
+                    <td width="15%">
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-primary btn-sm font-weight-light" role="button" asp-action="Edit" asp-route-id="@item.BlogId">Edit</a>
+                            <a class="btn btn-primary btn-sm font-weight-light" role="button" asp-action="Details" asp-route-id="@item.BlogId">Details</a>
+                            <a class="btn btn-primary btn-sm font-weight-light" role="button" asp-action="Delete" asp-route-id="@item.BlogId">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

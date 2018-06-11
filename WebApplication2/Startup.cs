@@ -22,9 +22,10 @@ namespace WebApplication2
         {
             services.AddMvc();
             
-            services.AddDbContext<BloggingContext>(options => options.UseSqlite("Data Source=blogging.db"));
+            services.AddDbContext<BloggingContext>(options => options.UseSqlite(Configuration.GetConnectionString("SQLiteConnection")));
 
-            services.AddTransient<IBlogRepository, BlogRepository>();
+            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
+            //services.AddTransient<IBlogRepository, BlogRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

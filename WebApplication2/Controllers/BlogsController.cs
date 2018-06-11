@@ -1,41 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using WebApplication2.Models;
 using WebApplication2.Repositories;
-using WebApplication2.SQLite;
+using WebApplication2.Models;
 
 namespace WebApplication2.Controllers
 {
     public class BlogsController : Controller
     {
+        //private readonly IBlogRepository _repo;
         private readonly IRepository<Blog> _repo;
 
-        protected BlogsController(IRepository<Blog> repo)
-        {
-            _repo = repo;   
-        }
-
-        //private readonly BloggingContext _context;
-
-        //public BlogsController(BloggingContext context)
-        //{
-        //    _context = context;
-        //}
-
-
-
-
+        //public BlogsController(IBlogRepository repo) _repo = repo;
+        public BlogsController(IRepository<Blog> repo) => _repo = repo;
 
         // GET: Blogs
         public async Task<IActionResult> Index()
         {
             return View(await _repo.GetAllAsyn());
-            //return View(await _context.Blogs.ToListAsync());
+            //return View(await _repo.Blogs.ToListAsync());
         }
 
         // GET: Blogs/Details/5
@@ -46,9 +29,9 @@ namespace WebApplication2.Controllers
                 return NotFound();
             }
 
-            //var blog = await _context.Blogs
+            //var blog = await _repo.Blogs
             //    .FirstOrDefaultAsync(m => m.BlogId == id);
-            var blog = await _repo.FindByAsyn(m => m.BlogId == id);
+            var blog = await _repo.FindAsync(m => m.BlogId == id);
                 
             if (blog == null)
             {
@@ -73,8 +56,8 @@ namespace WebApplication2.Controllers
         {
             if (ModelState.IsValid)
             {
-                //_context.Add(blog);
-                //await _context.SaveChangesAsync();
+                //_repo.Add(blog);
+                //await _repo.SaveChangesAsync();
                 
                 await _repo.AddAsyn(blog);
                 return RedirectToAction(nameof(Index));
@@ -90,7 +73,7 @@ namespace WebApplication2.Controllers
                 return NotFound();
             }
 
-            //var blog = await _context.Blogs.FindAsync(id);
+            //var blog = await _repo.Blogs.FindAsync(id);
             var blog = await _repo.FindAsync(m => m.BlogId == id);
             if (blog == null)
             {
@@ -115,8 +98,8 @@ namespace WebApplication2.Controllers
             {
                 try
                 {
-                    //_context.Update(blog);
-                    //await _context.SaveChangesAsync();
+                    //_repo.Update(blog);
+                    //await _repo.SaveChangesAsync();
                     
                     await _repo.UpdateAsyn(blog, id);
                 }
@@ -144,9 +127,9 @@ namespace WebApplication2.Controllers
                 return NotFound();
             }
 
-            //var blog = await _context.Blogs
+            //var blog = await _repo.Blogs
             //    .FirstOrDefaultAsync(m => m.BlogId == id);
-            var blog = await _repo.FindByAsyn(m => m.BlogId == id);
+            var blog = await _repo.FindAsync(m => m.BlogId == id);
             if (blog == null)
             {
                 return NotFound();
@@ -160,9 +143,9 @@ namespace WebApplication2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            //var blog = await _context.Blogs.FindAsync(id);
-            //_context.Blogs.Remove(blog);
-            //await _context.SaveChangesAsync();
+            //var blog = await _repo.Blogs.FindAsync(id);
+            //_repo.Blogs.Remove(blog);
+            //await _repo.SaveChangesAsync();
             
             var blog = await _repo.FindAsync(m => m.BlogId == id);
             
@@ -172,7 +155,7 @@ namespace WebApplication2.Controllers
 
         private bool BlogExistsAsync(int id)
         {
-            //return _context.Blogs.Any(e => e.BlogId == id);
+            //return _repo.Blogs.Any(e => e.BlogId == id);
             var blog = _repo.Find(m => m.BlogId == id);
             return (blog != null);
         }
