@@ -14,6 +14,8 @@ namespace WebApplication2.Repositories
         Task<int> CountAsync();
         void Delete(T entity);
         Task<int> DeleteAsyn(T entity);
+        void DeleteRangeById(Expression<Func<T, bool>> match);
+        Task<int> DeleteRangeByIdAsyn(Expression<Func<T, bool>> match);
         void Dispose();
         T Find(Expression<Func<T, bool>> match);
         ICollection<T> FindAll(Expression<Func<T, bool>> match);

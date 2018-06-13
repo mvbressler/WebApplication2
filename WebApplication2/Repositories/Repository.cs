@@ -77,12 +77,26 @@ namespace WebApplication2.Repositories
         public virtual void Delete(T entity)
         {
             _context.Set<T>().Remove(entity);
-            _context.SaveChanges();
+            _context.SaveChanges();            
         }
 
         public virtual async Task<int> DeleteAsyn(T entity)
         {
             _context.Set<T>().Remove(entity);
+            return await _context.SaveChangesAsync();
+        }
+
+        public virtual void DeleteRangeById(Expression<Func<T, bool>> match)
+        {
+            //List<T> a = _context.Set<T>().Where(match).ToList();
+            _context.Set<T>().RemoveRange(_context.Set<T>().Where(match));
+            _context.SaveChangesAsync();
+        }
+
+        public async Task<int> DeleteRangeByIdAsyn(Expression<Func<T, bool>> match)
+        {
+            //List<T> a = await _context.Set<T>().Where(match).ToListAsync();
+            _context.Set<T>().RemoveRange(_context.Set<T>().Where(match));
             return await _context.SaveChangesAsync();
         }
 

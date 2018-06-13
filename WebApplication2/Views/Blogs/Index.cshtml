@@ -9,15 +9,14 @@
 
 <p>
     <a class="btn btn-success btn-sm font-weight-bold" role="button" asp-action="Create">Create New</a>
+    <a class="btn btn-danger btn-sm font-weight-bold" role="button" id="delete_all">Delete All Selection</a>
 </p>
 
 <div class="table-responsive-sm">
     <table class="table table-sm table-hover table-borderless" id="BlogsGrid">
         <thead class="thead-dark">
             <tr>
-                <th>
-                    <a href="#">All</a>
-                </th>
+                <th><input type="checkbox" id="checkAll" /></th>
                 <th>
                     @Html.DisplayNameFor(model => model.Url)
                 </th>
@@ -30,7 +29,7 @@
                 <tr>
                     <td width="5%">
                         <div class="form-check">
-                            <input class="form-check-input position-static" type="checkbox" id="blankCheckbox" value="option1" >
+                            <input class="form-check-input position-static" type="checkbox" id="@item.BlogId" value="@item.BlogId">
                         </div>
                     </td>
                     <td>
@@ -48,3 +47,8 @@
         </tbody>
     </table>
 </div>
+@section Scripts
+{
+    <script src="~/js/blogScripts.js"></script>
+}
+

@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication2.Repositories;
 using WebApplication2.Models;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace WebApplication2.Controllers
 {
@@ -158,6 +161,15 @@ namespace WebApplication2.Controllers
             //return _repo.Blogs.Any(e => e.BlogId == id);
             var blog = _repo.Find(m => m.BlogId == id);
             return (blog != null);
+        }
+
+        [HttpPost, ActionName("MultiDelete")]
+        public string MassiveDelete(string selectedIDs)
+        {   
+            var list = JsonConvert.DeserializeObject < IEnumerable<int>>(selectedIDs);
+
+            _repo.DeleteRangeByIdAsyn(m => list.Any(s => s == m.BlogId));
+            return "OK";
         }
     }
 }
