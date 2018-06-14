@@ -149,7 +149,7 @@ namespace WebApplication2.Controllers
             //var blog = await _repo.Blogs.FindAsync(id);
             //_repo.Blogs.Remove(blog);
             //await _repo.SaveChangesAsync();
-            
+
             var blog = await _repo.FindAsync(m => m.BlogId == id);
             
             await _repo.DeleteAsyn(blog);
